@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "noEmitHelpers": true,
+        "noImplicitAny": false,
+        "baseUrl": "./src",
+        "paths": {},
+        "lib": [
+            "dom",
+            "es6"
+        ],
+        "types": [
+            "node",
+            "source-map",
+            "uglify-js",
+            "webpack"
+        ]
+    },
+    "awesomeTypescriptLoaderOptions": {
+        "forkChecker": true,
+        "useWebpackText": true
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}
