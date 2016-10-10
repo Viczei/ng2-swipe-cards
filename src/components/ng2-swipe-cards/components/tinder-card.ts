@@ -2,7 +2,8 @@ import {
     Component,
     ElementRef,
     EventEmitter,
-    HostListener
+    HostListener,
+    Renderer
 }
 from '@angular/core';
 
@@ -73,8 +74,8 @@ export class TinderCardComponent extends CardComponent {
 
     like: boolean;
 
-    constructor(el: ElementRef) {
-        super(el);
+    constructor(el: ElementRef, renderer: Renderer) {
+        super(el, renderer);
         this.orientation = "x";
     }
 
@@ -92,8 +93,8 @@ export class TinderCardComponent extends CardComponent {
 
         if (this.overlay) {
             let overlayElm = <HTMLElement>this.element.querySelector('.tinder-overlay');
-            overlayElm.style["transition"] = "opacity 0.6s ease";
-            overlayElm.style.opacity = "0.5";
+            this.renderer.setElementStyle(overlayElm, "transition", "transform 0.6s ease");
+            this.renderer.setElementStyle(overlayElm, "opacity", "0.5");
         }
         this.destroy(200);
     }
@@ -101,9 +102,9 @@ export class TinderCardComponent extends CardComponent {
     onSwipeLikeCb(event: any) {
         if (this.overlay) {
             let overlayElm = <HTMLElement>this.element.querySelector('.tinder-overlay');
-            overlayElm.style["transition"] = "opacity 0s ease";
+            this.renderer.setElementStyle(overlayElm, "transition", "opacity 0s ease");
             let opacity = (event.distance < 0 ? event.distance * -1 : event.distance) * 0.5 / this.element.offsetWidth;
-            overlayElm.style.opacity = opacity.toString();
+            this.renderer.setElementStyle(overlayElm, "opacity", opacity.toString());
         }
     }
 
@@ -125,8 +126,8 @@ export class TinderCardComponent extends CardComponent {
             } else {
                 if (this.overlay) {
                     let overlayElm = <HTMLElement>self.element.querySelector('.tinder-overlay');
-                    overlayElm.style["transition"] = "opacity 0.2s ease";
-                    overlayElm.style.opacity = "0";
+                    this.renderer.setElementStyle(overlayElm, "transition", "opacity 0.2s ease");
+                    this.renderer.setElementStyle(overlayElm, "opacity", "0");
                 }
                 this.translate({
                     x: 0,

@@ -2,7 +2,8 @@ import {
     Component,
     ElementRef,
     EventEmitter,
-    HostListener
+    HostListener,
+    Renderer
 } from '@angular/core';
 
 @Component({
@@ -29,20 +30,21 @@ export class CardComponent {
 
     element: HTMLElement;
 
-    constructor(protected el: ElementRef) {
+    constructor(protected el: ElementRef, public renderer: Renderer) {
         this.element = el.nativeElement;
+        this.renderer = renderer;
     }
 
     translate(params: any) {
         if (!this.fixed) {
-            this.element.style["transition"] = "transform " + (params.time || 0) + "s ease";
-            this.element.style["webkitTransform"] = "translate3d(" +
+            this.renderer.setElementStyle(this.element, "transition", "transform " + (params.time || 0) + "s ease");
+            this.renderer.setElementStyle(this.element, "webkitTransform", "translate3d(" +
                 (params.x && (!this.orientation || this.orientation.indexOf("x") != -1) ? (params.x) : 0) +
                 "px, " +
                 (params.y && (!this.orientation || this.orientation.indexOf("y") != -1) ? (params.y) : 0) +
                 "px, 0) rotate(" +
                 params.rotate +
-                "deg)";
+                "deg)");
         }
     }
 
@@ -56,7 +58,7 @@ export class CardComponent {
     }
 
     onReleaseCb(event: any) {
-        this.element.style["transition"] = "transform 0.2s ease";
+        this.renderer.setElementStyle(this.element, "transition", "transform 0.2s ease");
     }
 
     ngOnInit() {
@@ -75,10 +77,9 @@ export class CardComponent {
     }
 
     ngAfterViewChecked() {
-        let el = this.element;
         if (this.element.parentElement) {
-            el.style['height'] = el.parentElement.clientHeight + 'px';
-            el.style['width'] = el.parentElement.clientWidth + 'px';
+            this.renderer.setElementStyle(this.element, "height", this.element.parentElement.clientHeight + 'px');
+            this.renderer.setElementStyle(this.element, "width", this.element.parentElement.clientHeight + 'px');
         }
     }
 
