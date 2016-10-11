@@ -41,8 +41,7 @@ export class CardComponent {
                 (params.x && (!this.orientation || this.orientation.indexOf("x") != -1) ? (params.x) : 0) +
                 "px, " +
                 (params.y && (!this.orientation || this.orientation.indexOf("y") != -1) ? (params.y) : 0) +
-                "px, 0)" +
-                params.rotate ? (" rotate(" + params.rotate + "deg)") : "");
+                "px, 0) rotate(" + (params.rotate || 0) + "deg)");
         }
     }
 
