@@ -9,6 +9,11 @@ $ npm install ng2-swipe-cards --save
 # Demo
 https://embed.plnkr.co/ebTZz51SsYUs7wzLemuo/
 
+or clone the project and:
+```bash
+$ npm start
+```
+
 # Usage
 
 For webpack consumers, first, import SwipeableCardModule to your entry AppModule file,

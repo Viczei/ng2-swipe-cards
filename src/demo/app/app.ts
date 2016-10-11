@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation, ViewChild, TemplateRef, EventEmitter, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { SwipeCardsModule } from '../../ng2-swipe-cards';
+import { SwipeCardsModule } from '../../components/ng2-swipe-cards';
 
 @Component({
     selector: 'app',
