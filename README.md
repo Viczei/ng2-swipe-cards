@@ -6,6 +6,9 @@ A kit of cards (including tinder-card) for angular2
 $ npm install ng2-swipe-cards --save
 ```
 
+# Demo
+https://embed.plnkr.co/ebTZz51SsYUs7wzLemuo/
+
 # Usage
 
 For webpack consumers, first, import SwipeableCardModule to your entry AppModule file,
