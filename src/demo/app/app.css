@@ -84,8 +84,8 @@ sc-card {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  max-height: 500px;
-  max-width: 500px;
+  max-height: 800px;
+  max-width: 800px;
 }
 
 .card-header span {
