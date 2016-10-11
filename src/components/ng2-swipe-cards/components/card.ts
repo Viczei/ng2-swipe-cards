@@ -83,7 +83,7 @@ export class CardComponent {
     ngAfterViewChecked() {
         if (this.element.parentElement) {
             this.renderer.setElementStyle(this.element, "height", this.element.parentElement.clientHeight + 'px');
-            this.renderer.setElementStyle(this.element, "width", this.element.parentElement.clientHeight + 'px');
+            this.renderer.setElementStyle(this.element, "width", this.element.parentElement.clientWidth + 'px');
         }
     }
 
