@@ -63,18 +63,28 @@ button {
     width: 14em;
 }
 
-
-.card-container {
-  height:600px;
-  width:600px;
-  margin:10px auto;
+html, body {
+    margin: 0;
+    height: 100%;
 }
 
-mb-tinder-card {
+.card-container {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  height:80%;
+  width:80%;
+  margin:10px auto;
+}
+
+sc-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  max-height: 500px;
+  max-width: 500px;
 }
 
 .card-header span {
@@ -98,6 +108,12 @@ mb-tinder-card {
   align-items: center;
   justify-content: center;
   height: 100%;
+
+}
+
+.card-content img {
+  max-width:90%;
+  max-height:90%;
 }
 
 .buttons {
@@ -111,5 +127,6 @@ mb-tinder-card {
 
 .buttons button {
   background-color: #E1E1E1;
-  min-width:160px;
+  max-width:160px;
+  width:50%;
 }
