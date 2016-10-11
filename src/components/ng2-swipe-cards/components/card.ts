@@ -3,36 +3,35 @@ import {
     ElementRef,
     EventEmitter,
     HostListener,
-    Renderer
+    Renderer,
+    Input
 } from '@angular/core';
 
 @Component({
     template: '<ng-content></ng-content>',
-    selector: 'mb-card',
-    styles: [':host {\
-      transition: transform 1s ease;\
-      position: absolute;\
-      border-radius: 2px;\
-      border: 1px solid white;\
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);\
-      transition: transform 0.2s ease;\
-    }\
-  '],
-    inputs: ['orientation', 'fixed', 'callDestroy'],
-    outputs: ['onRelease', 'onSwipe']
+    selector: 'sc-card',
+    styleUrls: [
+        './card.css'
+    ],
+    inputs: ['fixed', 'orientation', 'callDestroy'],
+    outputs: ['onRelease', 'onAbort', 'onSwipe']
 })
 export class CardComponent {
-    orientation: String = 'xy';
     fixed: Boolean = false;
+    orientation: string = 'xy';
+    callDestroy: EventEmitter<any>;
+
     onRelease: EventEmitter<any> = new EventEmitter();
     onSwipe: EventEmitter<any> = new EventEmitter();
-    callDestroy: EventEmitter<any>;
+    onAbort: EventEmitter<any> = new EventEmitter();
 
     element: HTMLElement;
 
+    direction: any = { x: 0, y: 0 };
+    releaseRadius: any;
+
     constructor(protected el: ElementRef, public renderer: Renderer) {
         this.element = el.nativeElement;
-        this.renderer = renderer;
     }
 
     translate(params: any) {
@@ -42,27 +41,33 @@ export class CardComponent {
                 (params.x && (!this.orientation || this.orientation.indexOf("x") != -1) ? (params.x) : 0) +
                 "px, " +
                 (params.y && (!this.orientation || this.orientation.indexOf("y") != -1) ? (params.y) : 0) +
-                "px, 0) rotate(" +
-                params.rotate +
-                "deg)");
+                "px, 0)" +
+                params.rotate ? (" rotate(" + params.rotate + "deg)") : "");
         }
     }
 
     onSwipeCb(event: any) {
         let rotate = ((event.deltaX * 20) / this.element.clientWidth);
+        this.direction.x = event.deltaX > 0 ? 1 : -1;
+        this.direction.y = event.deltaY > 0 ? 1 : -1;
         this.translate({
             x: event.deltaX,
-            y: event.deltaY,
-            rotate: rotate
+            y: event.deltaY
         });
     }
 
-    onReleaseCb(event: any) {
-        this.renderer.setElementStyle(this.element, "transition", "transform 0.2s ease");
+    onAbortCb(event: any) {
+        this.translate({
+            x: 0,
+            y: 0,
+            rotate: 0,
+            time: 0.2
+        });
     }
 
     ngOnInit() {
         var self = this;
+
         if (this.callDestroy) {
             this.callDestroy.subscribe((delay: number) => {
                 this.destroy(delay);
@@ -86,9 +91,7 @@ export class CardComponent {
     @HostListener('pan', ['$event'])
     onPan(event: any) {
         if (!this.fixed) {
-            if (this.onSwipeCb) {
-                this.onSwipeCb(event);
-            }
+            this.onSwipeCb(event);
             if (this.onSwipe) {
                 this.onSwipe.emit(event);
             }
@@ -98,16 +101,23 @@ export class CardComponent {
     @HostListener('panend', ['$event'])
     onPanEnd(event: any) {
         if (!this.fixed) {
-            if (this.onReleaseCb) {
-                this.onReleaseCb(event);
-            }
-            if (this.onRelease) {
-                this.onRelease.emit(event);
+            if (this.element.clientWidth / 4 < event.deltaX || this.element.clientWidth / 4 * -1 > event.deltaX) {
+                if (this.onRelease) {
+                    this.onRelease.emit(event);
+                }
+            } else {
+                this.onAbortCb(event);
+                if (this.onAbort) {
+                    this.onAbort.emit(event);
+                }
             }
         }
     }
 
     ngOnDestroy() {
+        if (this.callDestroy) {
+            this.callDestroy.unsubscribe();
+        }
     }
 
 }

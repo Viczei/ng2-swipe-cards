@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { CardComponent, TinderCardComponent } from './components/index';
+import { CardComponent } from './components/card';
+import { TinderCardDirective } from './directives/tinder-card';
 
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 
 export class HammerConfig extends HammerGestureConfig {
     overrides = <any>{
-        'swipe': { velocity: 0.4, threshold: 20 },
         'pan': { enable: true }
     }
 }
@@ -18,15 +18,14 @@ export class HammerConfig extends HammerGestureConfig {
     ],
     declarations: [
         CardComponent,
-        TinderCardComponent
+        TinderCardDirective
     ],
     exports: [
         CardComponent,
-        TinderCardComponent
+        TinderCardDirective
     ],
     entryComponents: [
-        CardComponent,
-        TinderCardComponent
+        CardComponent
     ],
     providers: [{
         provide: HAMMER_GESTURE_CONFIG,
