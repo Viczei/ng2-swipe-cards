@@ -4,7 +4,8 @@ import {
     EventEmitter,
     HostListener,
     Renderer,
-    Input
+    Input,
+    Output
 } from '@angular/core';
 
 @Component({
@@ -12,23 +13,21 @@ import {
     selector: 'sc-card',
     styleUrls: [
         './card.css'
-    ],
-    inputs: ['fixed', 'orientation', 'callDestroy'],
-    outputs: ['onRelease', 'onAbort', 'onSwipe']
+    ]
 })
 export class CardComponent {
-    fixed: Boolean = false;
-    orientation: string = 'xy';
-    callDestroy: EventEmitter<any>;
+    @Input() fixed: Boolean = false;
+    @Input() orientation: string = 'xy';
+    @Input() callDestroy: EventEmitter<any>;
+    releaseRadius: any;
 
-    onRelease: EventEmitter<any> = new EventEmitter();
-    onSwipe: EventEmitter<any> = new EventEmitter();
-    onAbort: EventEmitter<any> = new EventEmitter();
+    @Output() onRelease: EventEmitter<any> = new EventEmitter();
+    @Output() onSwipe: EventEmitter<any> = new EventEmitter();
+    @Output() onAbort: EventEmitter<any> = new EventEmitter();
 
     element: HTMLElement;
 
     direction: any = { x: 0, y: 0 };
-    releaseRadius: any;
 
     constructor(protected el: ElementRef, public renderer: Renderer) {
         this.element = el.nativeElement;
@@ -65,7 +64,8 @@ export class CardComponent {
     }
 
     ngOnInit() {
-        var self = this;
+
+
 
         if (this.callDestroy) {
             this.callDestroy.subscribe((delay: number) => {
@@ -81,9 +81,16 @@ export class CardComponent {
     }
 
     ngAfterViewChecked() {
+
         if (this.element.parentElement) {
-            this.renderer.setElementStyle(this.element, "height", this.element.parentElement.clientHeight + 'px');
-            this.renderer.setElementStyle(this.element, "width", this.element.parentElement.clientWidth + 'px');
+            let height = this.element.parentElement.clientHeight;
+            let width = this.element.parentElement.clientWidth;
+            this.renderer.setElementStyle(this.element, "height", height + 'px');
+            this.renderer.setElementStyle(this.element, "width", width + 'px');
+            this.releaseRadius = {
+                x: width / 4,
+                y: height / 4
+            };
         }
     }
 
@@ -100,7 +107,12 @@ export class CardComponent {
     @HostListener('panend', ['$event'])
     onPanEnd(event: any) {
         if (!this.fixed) {
-            if (this.element.clientWidth / 4 < event.deltaX || this.element.clientWidth / 4 * -1 > event.deltaX) {
+            if (
+                (this.orientation == "x" && (this.releaseRadius.x < event.deltaX || this.releaseRadius.x * -1 > event.deltaX)) ||
+                (this.orientation == "y" && (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY)) ||
+                ((this.releaseRadius.x < event.deltaX || this.releaseRadius.x * -1 > event.deltaX) ||
+                    (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY))
+            ) {
                 if (this.onRelease) {
                     this.onRelease.emit(event);
                 }

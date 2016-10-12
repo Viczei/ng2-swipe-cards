@@ -66,7 +66,8 @@ export class TinderCardDirective {
 
     @HostListener('onSwipe', ['$event'])
     onSwipe(event: any) {
-        let like = event.deltaX > 0;
+        let like = (this.orientation === "y" && event.deltaY < 0) ||
+            (this.orientation !== "y" && event.deltaX > 0);
         let opacity = (event.distance < 0 ? event.distance * -1 : event.distance) * 0.5 / this.element.offsetWidth;
         if (!!this.overlay) {
             this.renderer.setElementStyle(this.overlayElement, "transition", "opacity 0s ease");
@@ -90,7 +91,8 @@ export class TinderCardDirective {
 
     @HostListener('onRelease', ['$event'])
     onRelease(event: any) {
-        let like = event.deltaX > 0;
+        let like = (this.orientation === "y" && event.deltaY < 0) ||
+            (this.orientation !== "y" && event.deltaX > 0);
         this.callLike.emit({ like });
         this.onLike.emit({ like });
     }
@@ -136,7 +138,7 @@ export class TinderCardDirective {
             this.callLike.subscribe((params: any) => {
                 let el = this.element;
                 let x = (el.offsetWidth + el.clientWidth) * (params.like ? 1 : -1);
-                let y = (el.offsetHeight + el.clientHeight) * (params.like ? 1 : -1);
+                let y = (el.offsetHeight + el.clientHeight) * (params.like ? -1 : 1);
                 this.translate({
                     x: x,
                     y: y,

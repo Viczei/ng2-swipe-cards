@@ -11,7 +11,7 @@ https://embed.plnkr.co/ebTZz51SsYUs7wzLemuo/
 
 or clone the project and:
 ```bash
-$ npm start
+$ npm install && npm start
 ```
 
 # Usage
