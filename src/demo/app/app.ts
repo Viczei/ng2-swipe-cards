@@ -22,12 +22,10 @@ export class App {
     overlay: any = {
         like:
         {
-            backgroundColor: '#28e93b',
-            img: 'http://cdn.mysitemyway.com/etc-mysitemyway/icons/legacy-previews/icons/magic-marker-icons-symbols-shapes/116272-magic-marker-icon-symbols-shapes-check-mark5-ps.png'
+            backgroundColor: '#28e93b'
         },
         dislike: {
-            backgroundColor: '#e92828',
-            img: 'http://cdn.mysitemyway.com/etc-mysitemyway/icons/legacy-previews/icons/magic-marker-icons-symbols-shapes/116272-magic-marker-icon-symbols-shapes-check-mark5-ps.png'
+            backgroundColor: '#e92828'
         }
     };
 
