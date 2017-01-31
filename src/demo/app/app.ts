@@ -69,7 +69,8 @@ import { SwipeCardsModule } from '../../components/ng2-swipe-cards';
     html, body {
         margin: 0;
         height: 100%;
-        overflow: hidden;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
 
     .footer {
@@ -82,7 +83,8 @@ import { SwipeCardsModule } from '../../components/ng2-swipe-cards';
     .left-panel {
       float:left;
       height:100%;
-      width:60%;
+      width:100%;
+      max-width:400px;
     }
 
     .right-panel {
