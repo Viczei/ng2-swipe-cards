@@ -117,15 +117,24 @@ export class CardComponent {
 
   ngOnInit() {
     this.callDestroy = this.callDestroy || new EventEmitter();
-    if (this.callDestroy) {
-      this.callDestroy.subscribe((delay: number) => {
-        this.destroy(delay);
-      });
-    }
+    this.initCallDestroy();
   }
 
-  ngOnChanges() {
-    this.callDestroy = this.callDestroy || new EventEmitter();
+  initCallDestroy() {
+    this.callDestroy.subscribe((delay: number) => {
+      this.destroy(delay);
+    });
+  }
+
+  ngOnChanges(changes) {
+    console.log(changes);
+    if (changes.callDestroy) {
+      this.callDestroy = changes.callDestroy.currentValue || changes.callDestroy.previousValue || new EventEmitter();
+      this.initCallDestroy();
+    }
+    if (changes.orientation) {
+      this.orientation = changes.orientation.currentValue || changes.orientation.previousValue || "xy";
+    }
   }
 
   destroy(delay: number = 0) {
@@ -135,7 +144,6 @@ export class CardComponent {
   }
 
   ngAfterViewChecked() {
-
     if (this.element.parentElement) {
       let height = this.element.parentElement.clientHeight;
       let width = this.element.parentElement.clientWidth;
