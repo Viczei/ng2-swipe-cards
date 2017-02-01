@@ -127,7 +127,6 @@ export class CardComponent {
   }
 
   ngOnChanges(changes) {
-    console.log(changes);
     if (changes.callDestroy) {
       this.callDestroy = changes.callDestroy.currentValue || changes.callDestroy.previousValue || new EventEmitter();
       this.initCallDestroy();
