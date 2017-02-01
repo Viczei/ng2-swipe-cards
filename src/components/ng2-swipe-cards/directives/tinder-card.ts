@@ -141,6 +141,10 @@ export class TinderCardDirective {
     this.overlay = this.overlay || {};
     this.orientation = this.orientation || "xy";
     this.callLike = this.callLike || new EventEmitter();
+    this.initCallLike();
+  }
+
+  initCallLike() {
     this.callLike.subscribe((params: any) => {
       let el = this.element;
       let x = (el.offsetWidth + el.clientWidth) * (params.like ? 1 : -1);
@@ -158,10 +162,14 @@ export class TinderCardDirective {
     });
   }
 
-  ngOnChanges() {
-    this.overlay = this.overlay || {};
-    this.orientation = this.orientation || "xy";
-    this.callLike = this.callLike || new EventEmitter();
+  ngOnChanges(changes) {
+    if (changes.callLike) {
+      this.callLike = changes.callLike.currentValue || changes.callLike.previousValue || new EventEmitter();
+      this.initCallLike();
+    }
+    if (changes.overlay) {
+      this.overlay = changes.overlay.currentValue || changes.overlay.previousValue || {};
+    }
   }
 
   ngOnDestroy() {
