@@ -1,7 +1,7 @@
 {
   "name": "ng2-swipe-cards",
   "description": "Angular2 cards",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "repository": {
     "type": "git",
     "url": "https://github.com/vicode/ng2-swipe-cards.git"
