@@ -116,11 +116,16 @@ export class CardComponent {
   }
 
   ngOnInit() {
+    this.callDestroy = this.callDestroy || new EventEmitter();
     if (this.callDestroy) {
       this.callDestroy.subscribe((delay: number) => {
         this.destroy(delay);
       });
     }
+  }
+
+  ngOnChanges() {
+    this.callDestroy = this.callDestroy || new EventEmitter();
   }
 
   destroy(delay: number = 0) {
