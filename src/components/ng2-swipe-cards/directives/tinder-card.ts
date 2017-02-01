@@ -19,9 +19,10 @@ from '@angular/core';
 })
 export class TinderCardDirective {
   @Input('tinder-card') overlay: any;
-  @Input() callLike: EventEmitter<any> = new EventEmitter();
+  @Input() callLike: EventEmitter<any>;
   @Input() fixed: boolean;
   @Input() orientation: string = 'xy';
+
   @Output() onLike: EventEmitter<any> = new EventEmitter();
 
   like: boolean;
@@ -137,24 +138,30 @@ export class TinderCardDirective {
   ngOnInit() {
     this.initOverlay();
 
-    if (this.callLike) {
-      this.callLike.subscribe((params: any) => {
-        let el = this.element;
-        let x = (el.offsetWidth + el.clientWidth) * (params.like ? 1 : -1);
-        let y = (el.offsetHeight + el.clientHeight) * (params.like ? -1 : 1);
-        this.translate({
-          x: x,
-          y: y,
-          rotate: (x * 20) / el.clientWidth,
-          time: 0.8
-        });
-        this.renderer.setElementStyle(this.overlayElement, "transition", "opacity 0.4s ease");
-        this.renderer.setElementStyle(this.overlayElement, "opacity", "0.5");
-        this.renderer.setElementStyle(this.overlayElement, "background-color", this.overlay[params.like ? "like" : "dislike"].backgroundColor);
-        this.destroy(200);
+    this.overlay = this.overlay || {};
+    this.orientation = this.orientation || "xy";
+    this.callLike = this.callLike || new EventEmitter();
+    this.callLike.subscribe((params: any) => {
+      let el = this.element;
+      let x = (el.offsetWidth + el.clientWidth) * (params.like ? 1 : -1);
+      let y = (el.offsetHeight + el.clientHeight) * (params.like ? -1 : 1);
+      this.translate({
+        x: x,
+        y: y,
+        rotate: (x * 20) / el.clientWidth,
+        time: 0.8
       });
-    }
+      this.renderer.setElementStyle(this.overlayElement, "transition", "opacity 0.4s ease");
+      this.renderer.setElementStyle(this.overlayElement, "opacity", "0.5");
+      this.renderer.setElementStyle(this.overlayElement, "background-color", this.overlay[params.like ? "like" : "dislike"].backgroundColor);
+      this.destroy(200);
+    });
+  }
 
+  ngOnChanges() {
+    this.overlay = this.overlay || {};
+    this.orientation = this.orientation || "xy";
+    this.callLike = this.callLike || new EventEmitter();
   }
 
   ngOnDestroy() {
