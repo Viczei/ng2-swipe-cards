@@ -157,7 +157,12 @@ export class CardComponent {
 
   @HostListener('pan', ['$event'])
   onPan(event: any) {
-    if (!this.fixed) {
+    if (event.isFinal) {
+      this.onAbortCb(event);
+      if (this.onAbort) {
+        this.onAbort.emit(event);
+      }
+    } else if (!this.fixed) {
       this.onSwipeCb(event);
       if (this.onSwipe) {
         this.onSwipe.emit(event);
