@@ -19,6 +19,7 @@ import {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
       transition: transform 0.2s ease;
       background-color: white;
+      touch-action: none !important;
     }
     :host(.card-heap) {
       transition: transform 1s ease;
@@ -157,12 +158,7 @@ export class CardComponent {
 
   @HostListener('pan', ['$event'])
   onPan(event: any) {
-    if (event.isFinal) {
-      this.onAbortCb(event);
-      if (this.onAbort) {
-        this.onAbort.emit(event);
-      }
-    } else if (!this.fixed) {
+    if (!this.fixed) {
       this.onSwipeCb(event);
       if (this.onSwipe) {
         this.onSwipe.emit(event);
