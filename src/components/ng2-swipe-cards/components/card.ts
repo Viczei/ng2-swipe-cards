@@ -8,6 +8,9 @@ import {
   Output
 } from '@angular/core';
 
+import {DragDropService} from '../common/drag-drop.service';
+import {drag, release} from '../action/drag.action';
+
 @Component({
   template: '<ng-content></ng-content>',
   selector: 'sc-card',
@@ -82,7 +85,14 @@ export class CardComponent {
 
   direction: any = { x: 0, y: 0 };
 
-  constructor(protected el: ElementRef, public renderer: Renderer) {
+  emitterId: string;
+
+  constructor(
+    protected el: ElementRef,
+    public renderer: Renderer,
+    private dragDropService: DragDropService
+  ) {
+    this.emitterId = dragDropService.getEmitterId();
     this.element = el.nativeElement;
   }
 
@@ -119,6 +129,20 @@ export class CardComponent {
   ngOnInit() {
     this.callDestroy = this.callDestroy || new EventEmitter();
     this.initCallDestroy();
+    this.dragDropService.subscribe((result) => {
+      switch (result.type) {
+        case 'HOVER':
+          if (this.emitterId === result.payload.target_id) {
+            console.log('card hover!');
+          }
+          break;
+        case 'DROP':
+          if (this.emitterId === result.payload.target_id) {
+            console.log('card dropped!');
+          }
+          break;
+      }
+    });
   }
 
   initCallDestroy() {
@@ -159,6 +183,7 @@ export class CardComponent {
   @HostListener('pan', ['$event'])
   onPan(event: any) {
     if (!this.fixed) {
+      this.dragDropService.emit(drag(event, this.emitterId));
       this.onSwipeCb(event);
       if (this.onSwipe) {
         this.onSwipe.emit(event);
@@ -169,6 +194,7 @@ export class CardComponent {
   @HostListener('panend', ['$event'])
   onPanEnd(event: any) {
     if (!this.fixed) {
+      this.dragDropService.emit(release(event, this.emitterId));
       if (
         (this.orientation == "x" && (this.releaseRadius.x < event.deltaX || this.releaseRadius.x * -1 > event.deltaX)) ||
         (this.orientation == "y" && (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY)) ||
