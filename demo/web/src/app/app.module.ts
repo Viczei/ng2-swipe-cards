@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import {SwipeCardsModule} from 'ng2-swipe-cards';
+import { SwipeCardsModule } from 'ng2-swipe-cards';
 import {
   NgModule,
   ApplicationRef
@@ -27,6 +27,7 @@ import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { AppState, InternalStateType } from './app.service';
 import { HomeComponent } from './home';
 import { TinderComponent } from './tinder';
+import { GridComponent } from './grid';
 import { NoContentComponent } from './no-content';
 import { XLargeDirective } from './home/x-large';
 
@@ -56,6 +57,7 @@ type StoreType = {
     AppComponent,
     HomeComponent,
     TinderComponent,
+    GridComponent,
     NoContentComponent,
     XLargeDirective
   ],

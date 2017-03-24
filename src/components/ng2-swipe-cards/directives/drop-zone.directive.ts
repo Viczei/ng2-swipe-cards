@@ -3,13 +3,12 @@ import {
   ElementRef,
   Renderer,
   Output,
+  Input,
   EventEmitter
 }
 from '@angular/core';
 
 import {DragDropService} from '../common/drag-drop.service';
-
-import {hover, drop} from '../action/drop.action';
 
 @Directive({
   selector: '[sc-drop-zone]'
@@ -17,8 +16,9 @@ import {hover, drop} from '../action/drop.action';
 export class DropZoneDirective {
   emitterId: string;
   element: HTMLElement;
-  @Output() onHover: EventEmitter<any> = new EventEmitter();
-  @Output() onDrop: EventEmitter<any> = new EventEmitter();
+  @Output() onZoneHover: EventEmitter<any> = new EventEmitter();
+  @Output() onZoneDrop: EventEmitter<any> = new EventEmitter();
+  @Input('sc-drop-zone') data : any;
 
   constructor(
     private dragDropService: DragDropService,
@@ -26,40 +26,37 @@ export class DropZoneDirective {
     public renderer: Renderer
   ) {
     this.element = el.nativeElement;
-    this.emitterId = dragDropService.getEmitterId();
   }
 
   ngOnInit() {
-    this.dragDropService.subscribe((result) => {
-      result.payload.event.source = this.element;
-      switch (result.type) {
-        case 'DRAG':
-          if (
-            result.payload.event.center.x > this.element.offsetLeft
-            && result.payload.event.center.x < this.element.offsetLeft + this.element.clientHeight
-            && result.payload.event.center.y > this.element.offsetTop
-            && result.payload.event.center.y < this.element.offsetTop + this.element.clientHeight
-          ) {
-            if (this.onHover) {
-              this.onHover.emit(result.payload.event);
-            }
-            this.dragDropService.emit(hover(result.payload.event, this.emitterId, result.payload.source_id));
-          }
-          break;
-        case 'RELEASE':
-          if (
-            result.payload.event.center.x > this.element.offsetLeft
-            && result.payload.event.center.x < this.element.offsetLeft + this.element.clientWidth
-            && result.payload.event.center.y > this.element.offsetTop
-            && result.payload.event.center.y < this.element.offsetTop + this.element.clientHeight
-          ) {
-            if (this.onDrop) {
-              this.onDrop.emit(result.payload.event);
-            }
-            this.dragDropService.emit(drop(result.payload.event, this.emitterId, result.payload.source_id));
-          }
-          break;
+    this.dragDropService.subscribe('PAN', (payload) => {
+      if (
+        payload.event.center.x > this.element.offsetLeft
+        && payload.event.center.x < this.element.offsetLeft + this.element.clientHeight
+        && payload.event.center.y > this.element.offsetTop
+        && payload.event.center.y < this.element.offsetTop + this.element.clientHeight
+      ) {
+        payload.dropZone = this;
+        if (this.onZoneHover) {
+          this.onZoneHover.emit(payload);
+        }
       }
+      this.dragDropService.emit('HOVER', payload);
+    });
+
+    this.dragDropService.subscribe('PAN_END', (payload) => {
+      if (
+        payload.event.center.x > this.element.offsetLeft
+        && payload.event.center.x < this.element.offsetLeft + this.element.clientWidth
+        && payload.event.center.y > this.element.offsetTop
+        && payload.event.center.y < this.element.offsetTop + this.element.clientHeight
+      ) {
+        payload.dropZone = this;
+        if (this.onZoneDrop) {
+          this.onZoneDrop.emit(payload);
+        }
+      }
+      this.dragDropService.emit('DROP', payload);
     });
   }
 }

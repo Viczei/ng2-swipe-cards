@@ -9,15 +9,9 @@ export class CatsService {
 
   }
 
-  getKittenUrl() {
-    var w = 500 - Math.floor((Math.random() * 100) + 1);
-    var h = 500 - Math.floor((Math.random() * 100) + 1);
-    return "http://placekitten.com/" + w + "/" + h;
-  }
-
-  get() {
+  public get() {
     if (!this.cats.length) {
-      for (var i = 0; i < 50; i++) {
+      for (let i = 0; i < 50; i++) {
         this.cats.push({
           id: i + 1,
           url: this.getKittenUrl()
@@ -27,4 +21,9 @@ export class CatsService {
     return this.cats;
   }
 
+  private getKittenUrl() {
+    let w = 500 - Math.floor((Math.random() * 100) + 1);
+    let h = 500 - Math.floor((Math.random() * 100) + 1);
+    return "http://placekitten.com/" + w + '/' + h;
+  }
 }

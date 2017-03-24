@@ -1,0 +1,26 @@
+<h1>Grid Card</h1>
+<span>
+  <a [routerLink]=" ['./child-grid'] ">
+    Settings
+  </a>
+  <div sc-drop-zone (onZoneDrop)="onZoneDrop($event)" (onZoneHover)="onZoneHover($event)">Drop Zone</div>
+</span>
+<div class="grid">
+  <div class="card-container grid-item" *ngFor="let card of cards;let i = index;">
+      <sc-card sc-draggable
+      (onDrag)="onDrag($event, i);"
+      (onDragEnd)="onDragEnd($event)"
+      (onDragDrop)="onDragDrop($event, i)"
+      (onDragHover)="onDragHover($event)"
+      [ngStyle]="{'z-index': currentIndex === i ? 100 : 0}"
+      >
+        <div class="card-header">
+          <span>{{card.id}}</span>
+        </div>
+        <div class="card-content">
+          <img [src]="card.url" draggable="false"/>
+        </div>
+      </sc-card>
+  </div>
+</div>
+<router-outlet></router-outlet>

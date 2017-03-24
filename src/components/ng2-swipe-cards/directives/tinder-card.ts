@@ -10,6 +10,11 @@ import {
 }
 from '@angular/core';
 
+import {
+  DraggableDirective
+} from './draggable.directive';
+
+import {DragDropService} from '../common/drag-drop.service';
 
 @Directive({
   selector: '[tinder-card]',
@@ -17,22 +22,28 @@ from '@angular/core';
     class: 'card-heap'
   }
 })
-export class TinderCardDirective {
+export class TinderCardDirective extends DraggableDirective {
   @Input('tinder-card') overlay: any;
   @Input() callLike: EventEmitter<any>;
   @Input() fixed: boolean;
   @Input() orientation: string = 'xy';
 
+  @Output() onRelease: EventEmitter<any> = new EventEmitter();
+  @Output() onSwipe: EventEmitter<any> = new EventEmitter();
+  @Output() onAbort: EventEmitter<any> = new EventEmitter();
   @Output() onLike: EventEmitter<any> = new EventEmitter();
 
   like: boolean;
 
   element: HTMLElement;
-  renderer: Renderer;
   overlayElement: HTMLElement;
 
-  constructor(el: ElementRef, renderer: Renderer) {
-    this.renderer = renderer;
+  constructor(
+    protected dragDropService: DragDropService,
+    protected el: ElementRef,
+    protected renderer: Renderer
+  ) {
+    super(dragDropService, el, renderer);
     this.element = el.nativeElement;
   }
 
@@ -51,11 +62,27 @@ export class TinderCardDirective {
 
   onSwipeLikeCb(event: any) {
     if (this.overlay) {
+      let rotate = ((event.deltaX * 20) / this.element.clientWidth);
+      this.direction.x = event.deltaX > 0 ? 1 : -1;
+      this.direction.y = event.deltaY > 0 ? 1 : -1;
+      this.translate({
+        x: event.deltaX,
+        y: event.deltaY
+      });
       let overlayElm = <HTMLElement>this.element.querySelector('.tinder-overlay');
       this.renderer.setElementStyle(overlayElm, "transition", "opacity 0s ease");
       let opacity = (event.distance < 0 ? event.distance * -1 : event.distance) * 0.5 / this.element.offsetWidth;
       this.renderer.setElementStyle(overlayElm, "opacity", opacity.toString());
     }
+  }
+
+  private onAbortCb(event: any) {
+    this.translate({
+      x: 0,
+      y: 0,
+      rotate: 0,
+      time: 0.2
+    });
   }
 
   destroy(delay: number = 0) {
@@ -64,8 +91,9 @@ export class TinderCardDirective {
     }, 200);
   }
 
-  @HostListener('onSwipe', ['$event'])
-  onSwipe(event: any) {
+  @HostListener('pan', ['$event'])
+  public onPan(event: any) {
+    super.onPan(event);
     let like = (this.orientation === "y" && event.deltaY < 0) ||
       (this.orientation !== "y" && event.deltaX > 0);
     let opacity = (event.distance < 0 ? event.distance * -1 : event.distance) * 0.5 / this.element.offsetWidth;
@@ -74,6 +102,7 @@ export class TinderCardDirective {
       this.renderer.setElementStyle(this.overlayElement, "opacity", opacity.toString());
       this.renderer.setElementStyle(this.overlayElement, "background-color", this.overlay[like ? "like" : "dislike"].backgroundColor);
     }
+    this.onSwipe.emit();
     this.translate({
       x: event.deltaX,
       y: event.deltaY,
@@ -81,23 +110,37 @@ export class TinderCardDirective {
     });
   }
 
-  @HostListener('onAbort', ['$event'])
-  onAbort(event: any) {
-    if (!!this.overlay) {
-      this.renderer.setElementStyle(this.overlayElement, "transition", "opacity 0.2s ease");
-      this.renderer.setElementStyle(this.overlayElement, "opacity", "0");
-    }
-  }
-
-  @HostListener('onRelease', ['$event'])
-  onRelease(event: any) {
-    let like = (this.orientation === "y" && event.deltaY < 0) ||
-      (this.orientation !== "y" && event.deltaX > 0);
-    if (this.callLike) {
-      this.callLike.emit({ like });
-    }
-    if (this.onLike) {
-      this.onLike.emit({ like });
+  @HostListener('panend', ['$event'])
+  public onPanEnd(event: any) {
+    super.onPanEnd(event);
+    if (!this.fixed) {
+      this.dragDropService.emit('PAN_END', { event: event, draggable: this });
+      if (
+        (this.orientation == "x" && (this.releaseRadius.x < event.deltaX || this.releaseRadius.x * -1 > event.deltaX)) ||
+        (this.orientation == "y" && (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY)) ||
+        ((this.releaseRadius.x < event.deltaX || this.releaseRadius.x * -1 > event.deltaX) ||
+          (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY))
+      ) {
+        let like = (this.orientation === "y" && event.deltaY < 0) ||
+          (this.orientation !== "y" && event.deltaX > 0);
+        if (this.callLike) {
+          this.callLike.emit({ like });
+        }
+        if (this.onLike) {
+          this.onLike.emit({ like });
+        }
+        if (this.onRelease) {
+          this.onRelease.emit(event);
+        }
+      } else {
+        if (!!this.overlay) {
+          this.renderer.setElementStyle(this.overlayElement, "transition", "opacity 0.2s ease");
+          this.renderer.setElementStyle(this.overlayElement, "opacity", "0");
+        }
+        if (this.onAbort) {
+          this.onAbort.emit(event);
+        }
+      }
     }
   }
 

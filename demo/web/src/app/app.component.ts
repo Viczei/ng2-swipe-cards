@@ -28,6 +28,10 @@ import { AppState } from './app.service';
         routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
         Tinder
       </a>
+      <a [routerLink]=" ['./grid'] "
+        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
+        Grid
+      </a>
     </nav>
 
     <main>

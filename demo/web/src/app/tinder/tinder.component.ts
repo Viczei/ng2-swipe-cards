@@ -15,13 +15,13 @@ console.log('`Tinder` component loaded asynchronously');
 })
 export class TinderComponent {
 
-  @ViewChild('cardLog') cardLogContainer: any;
-  @ViewChild('tinderCardLog') tinderCardLogContainer: any;
+  @ViewChild('cardLog') public cardLogContainer: any;
+  @ViewChild('tinderCardLog') public tinderCardLogContainer: any;
 
-  cards: any[] = [];
-  cardCursor: number = 0;
-  orientation: string = "x";
-  overlay: any = {
+  public cards: any[] = [];
+  public cardCursor: number = 0;
+  public orientation: string = 'x';
+  public overlay: any = {
     like: {
       backgroundColor: '#28e93b'
     },
@@ -30,9 +30,8 @@ export class TinderComponent {
     }
   };
 
-  cardLogs: any = [];
-  tinderCardLogs: any = [];
-
+  public cardLogs: any = [];
+  public tinderCardLogs: any = [];
 
   constructor(
     private catsService: CatsService
@@ -44,50 +43,50 @@ export class TinderComponent {
     });
   }
 
-  like(like) {
-    var self = this;
+  public like(like) {
+    let self = this;
     if (this.cards.length > 0) {
       self.cards[this.cardCursor++].likeEvent.emit({ like });
       // DO STUFF WITH YOUR CARD
-      this.tinderCardLogs.push("callLike(" + JSON.stringify({ like }) + ")");
+      this.tinderCardLogs.push('callLike(' + JSON.stringify({ like }) + ')');
       this.scrollToBottom(this.tinderCardLogContainer);
     }
   }
 
-  onCardLike(event) {
-    var item = this.cards[this.cardCursor++];
-    // DO STUFF WITH YOUR CARD
-    this.tinderCardLogs.push("onLike(" + JSON.stringify(event) + ")");
-    this.scrollToBottom(this.tinderCardLogContainer);
-  }
-
-  getKittenUrl() {
-    var w = 500 - Math.floor((Math.random() * 100) + 1);
-    var h = 500 - Math.floor((Math.random() * 100) + 1);
-    return "http://placekitten.com/" + w + "/" + h;
-  }
-
-  onRelease(event) {
-    this.cardLogs.push("onRelease(event)");
+  public onRelease(event) {
+    this.cardLogs.push('onRelease(event)');
     this.scrollToBottom(this.cardLogContainer);
 
   }
 
-  onAbort(event) {
-    this.cardLogs.push("onAbort(event)");
+  public onAbort(event) {
+    this.cardLogs.push('onAbort(event)');
     this.scrollToBottom(this.cardLogContainer);
   }
 
-  onSwipe(event) {
-    this.cardLogs.push("onSwipe(event)");
+  public onSwipe(event) {
+    this.cardLogs.push('onSwipe(event)');
     this.scrollToBottom(this.cardLogContainer);
   }
 
-  onDrop(event) {
+  public onDrop(event) {
     console.log(event);
   }
 
-  scrollToBottom(el) {
+  public onCardLike(event) {
+    let item = this.cards[this.cardCursor++];
+    // DO STUFF WITH YOUR CARD
+    this.tinderCardLogs.push('onLike(' + JSON.stringify(event) + ')');
+    this.scrollToBottom(this.tinderCardLogContainer);
+  }
+
+  private getKittenUrl() {
+    let w = 500 - Math.floor((Math.random() * 100) + 1);
+    let h = 500 - Math.floor((Math.random() * 100) + 1);
+    return 'http://placekitten.com/' + w + '/' + h;
+  }
+
+  private scrollToBottom(el) {
     setTimeout(() => {
       if (el) {
         el.nativeElement.scrollTop = el.nativeElement.scrollHeight;

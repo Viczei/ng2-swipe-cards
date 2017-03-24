@@ -36,3 +36,6 @@ node_modules
 src/**/*.js
 src/**/*.js.map
 src/**/*.json
+demo/web/src/**/*.js
+demo/web/src/**/*.js.map
+demo/web/src/**/*.json
