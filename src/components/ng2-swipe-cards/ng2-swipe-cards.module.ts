@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 import { CardComponent } from './components/card';
 import { TinderCardDirective } from './directives/tinder-card';
@@ -13,6 +13,9 @@ export class HammerConfig extends HammerGestureConfig {
 }
 
 @NgModule({
+  imports: [
+    CommonModule
+  ],
   declarations: [
     CardComponent,
     TinderCardDirective
