@@ -13,9 +13,6 @@ export class HammerConfig extends HammerGestureConfig {
 }
 
 @NgModule({
-  imports: [
-    BrowserModule
-  ],
   declarations: [
     CardComponent,
     TinderCardDirective
