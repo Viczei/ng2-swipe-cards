@@ -18,8 +18,18 @@ from '@angular/core';
   }
 })
 export class TinderCardDirective {
-  @Input('tinder-card') overlay: any;
-  @Input() callLike: EventEmitter<any>;
+  _overlay: any;
+  @Input('tinder-card')
+  set overlay(value: any) {
+    this._overlay = value || {};
+  }
+  _callLike: EventEmitter<any>;
+  @Input('callLike')
+  set callLike(value: EventEmitter<any>) {
+    this._callLike = value || new EventEmitter<any>();
+    this.initCallLike();
+  }
+
   @Input() fixed: boolean;
   @Input() orientation: string = 'xy';
 
@@ -42,7 +52,7 @@ export class TinderCardDirective {
     let x = (el.offsetWidth + el.clientWidth) * ((!!event.like ? 1 : -1) || 0);
     let rotate = (x * 20) / el.clientWidth;
 
-    if (this.overlay) {
+    if (this._overlay) {
       let overlayElm = <HTMLElement>this.element.querySelector('.tinder-overlay');
       this.renderer.setElementStyle(overlayElm, "transition", "transform 0.6s ease");
       this.renderer.setElementStyle(overlayElm, "opacity", "0.5");
@@ -50,7 +60,7 @@ export class TinderCardDirective {
   }
 
   onSwipeLikeCb(event: any) {
-    if (this.overlay) {
+    if (this._overlay) {
       let overlayElm = <HTMLElement>this.element.querySelector('.tinder-overlay');
       this.renderer.setElementStyle(overlayElm, "transition", "opacity 0s ease");
       let opacity = (event.distance < 0 ? event.distance * -1 : event.distance) * 0.5 / this.element.offsetWidth;
@@ -69,10 +79,10 @@ export class TinderCardDirective {
     let like = (this.orientation === "y" && event.deltaY < 0) ||
       (this.orientation !== "y" && event.deltaX > 0);
     let opacity = (event.distance < 0 ? event.distance * -1 : event.distance) * 0.5 / this.element.offsetWidth;
-    if (!!this.overlay) {
+    if (!!this._overlay) {
       this.renderer.setElementStyle(this.overlayElement, "transition", "opacity 0s ease");
       this.renderer.setElementStyle(this.overlayElement, "opacity", opacity.toString());
-      this.renderer.setElementStyle(this.overlayElement, "background-color", this.overlay[like ? "like" : "dislike"].backgroundColor);
+      this.renderer.setElementStyle(this.overlayElement, "background-color", this._overlay[like ? "like" : "dislike"].backgroundColor);
     }
     this.translate({
       x: event.deltaX,
@@ -83,7 +93,7 @@ export class TinderCardDirective {
 
   @HostListener('onAbort', ['$event'])
   onAbort(event: any) {
-    if (!!this.overlay) {
+    if (!!this._overlay) {
       this.renderer.setElementStyle(this.overlayElement, "transition", "opacity 0.2s ease");
       this.renderer.setElementStyle(this.overlayElement, "opacity", "0");
     }
@@ -93,8 +103,8 @@ export class TinderCardDirective {
   onRelease(event: any) {
     let like = (this.orientation === "y" && event.deltaY < 0) ||
       (this.orientation !== "y" && event.deltaX > 0);
-    if (this.callLike) {
-      this.callLike.emit({ like });
+    if (this._callLike) {
+      this._callLike.emit({ like });
     }
     if (this.onLike) {
       this.onLike.emit({ like });
@@ -115,7 +125,7 @@ export class TinderCardDirective {
   }
 
   initOverlay() {
-    if (!!this.overlay) {
+    if (!!this._overlay) {
       this.overlayElement = document.createElement("div");
       this.overlayElement.className += " card-overlay";
       this.element.appendChild(this.overlayElement);
@@ -138,14 +148,14 @@ export class TinderCardDirective {
   ngOnInit() {
     this.initOverlay();
 
-    this.overlay = this.overlay || {};
+    this._overlay = this._overlay || {};
     this.orientation = this.orientation || "xy";
-    this.callLike = this.callLike || new EventEmitter();
+    this._callLike = this._callLike || new EventEmitter();
     this.initCallLike();
   }
 
   initCallLike() {
-    this.callLike.subscribe((params: any) => {
+    this._callLike.subscribe((params: any) => {
       let el = this.element;
       let x = (el.offsetWidth + el.clientWidth) * (params.like ? 1 : -1);
       let y = (el.offsetHeight + el.clientHeight) * (params.like ? -1 : 1);
@@ -157,24 +167,24 @@ export class TinderCardDirective {
       });
       this.renderer.setElementStyle(this.overlayElement, "transition", "opacity 0.4s ease");
       this.renderer.setElementStyle(this.overlayElement, "opacity", "0.5");
-      this.renderer.setElementStyle(this.overlayElement, "background-color", this.overlay[params.like ? "like" : "dislike"].backgroundColor);
+      this.renderer.setElementStyle(this.overlayElement, "background-color", this._overlay[params.like ? "like" : "dislike"].backgroundColor);
       this.destroy(200);
     });
   }
 
   ngOnChanges(changes) {
     if (changes.callLike) {
-      this.callLike = changes.callLike.currentValue || changes.callLike.previousValue || new EventEmitter();
+      this._callLike = changes.callLike.currentValue || changes.callLike.previousValue || new EventEmitter();
       this.initCallLike();
     }
     if (changes.overlay) {
-      this.overlay = changes.overlay.currentValue || changes.overlay.previousValue || {};
+      this._overlay = changes.overlay.currentValue || changes.overlay.previousValue || {};
     }
   }
 
   ngOnDestroy() {
-    if (this.callLike) {
-      this.callLike.unsubscribe();
+    if (this._callLike) {
+      this._callLike.unsubscribe();
     }
   }
 }
