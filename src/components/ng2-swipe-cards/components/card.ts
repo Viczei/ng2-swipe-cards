@@ -69,8 +69,17 @@ import {
 })
 export class CardComponent {
   @Input() fixed: Boolean = false;
-  @Input() orientation: string = 'xy';
-  @Input() callDestroy: EventEmitter<any>;
+  _orientation: string = 'xy';
+  @Input('orientation')
+  set orientation(value: string) {
+    this._orientation = value || "xy";
+  }
+  _callDestroy: EventEmitter<any>;
+  @Input('callDestroy')
+  set callDestroy(value: EventEmitter<any>) {
+    this._callDestroy = value || new EventEmitter();
+    this.initCallDestroy();
+  }
   releaseRadius: any;
   released: Boolean = false;
 
@@ -90,9 +99,9 @@ export class CardComponent {
     if (!this.fixed && !this.released) {
       this.renderer.setElementStyle(this.element, "transition", "transform " + (params.time || 0) + "s ease");
       this.renderer.setElementStyle(this.element, "webkitTransform", "translate3d(" +
-        (params.x && (!this.orientation || this.orientation.indexOf("x") != -1) ? (params.x) : 0) +
+        (params.x && (!this._orientation || this._orientation.indexOf("x") != -1) ? (params.x) : 0) +
         "px, " +
-        (params.y && (!this.orientation || this.orientation.indexOf("y") != -1) ? (params.y) : 0) +
+        (params.y && (!this._orientation || this._orientation.indexOf("y") != -1) ? (params.y) : 0) +
         "px, 0) rotate(" + (params.rotate || 0) + "deg)");
     }
   }
@@ -117,24 +126,14 @@ export class CardComponent {
   }
 
   ngOnInit() {
-    this.callDestroy = this.callDestroy || new EventEmitter();
+    this._callDestroy = this._callDestroy || new EventEmitter();
     this.initCallDestroy();
   }
 
   initCallDestroy() {
-    this.callDestroy.subscribe((delay: number) => {
+    this._callDestroy.subscribe((delay: number) => {
       this.destroy(delay);
     });
-  }
-
-  ngOnChanges(changes) {
-    if (changes.callDestroy) {
-      this.callDestroy = changes.callDestroy.currentValue || changes.callDestroy.previousValue || new EventEmitter();
-      this.initCallDestroy();
-    }
-    if (changes.orientation) {
-      this.orientation = changes.orientation.currentValue || changes.orientation.previousValue || "xy";
-    }
   }
 
   destroy(delay: number = 0) {
@@ -170,8 +169,8 @@ export class CardComponent {
   onPanEnd(event: any) {
     if (!this.fixed && !this.released) {
       if (
-        (this.orientation == "x" && (this.releaseRadius.x < event.deltaX || this.releaseRadius.x * -1 > event.deltaX)) ||
-        (this.orientation == "y" && (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY)) ||
+        (this._orientation == "x" && (this.releaseRadius.x < event.deltaX || this.releaseRadius.x * -1 > event.deltaX)) ||
+        (this._orientation == "y" && (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY)) ||
         ((this.releaseRadius.x < event.deltaX || this.releaseRadius.x * -1 > event.deltaX) ||
           (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY))
       ) {
@@ -189,8 +188,8 @@ export class CardComponent {
   }
 
   ngOnDestroy() {
-    if (this.callDestroy) {
-      this.callDestroy.unsubscribe();
+    if (this._callDestroy) {
+      this._callDestroy.unsubscribe();
     }
   }
 
