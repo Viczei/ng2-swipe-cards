@@ -72,6 +72,7 @@ export class CardComponent {
   @Input() orientation: string = 'xy';
   @Input() callDestroy: EventEmitter<any>;
   releaseRadius: any;
+  released: Boolean = false;
 
   @Output() onRelease: EventEmitter<any> = new EventEmitter();
   @Output() onSwipe: EventEmitter<any> = new EventEmitter();
@@ -86,7 +87,7 @@ export class CardComponent {
   }
 
   translate(params: any) {
-    if (!this.fixed) {
+    if (!this.fixed && !this.released) {
       this.renderer.setElementStyle(this.element, "transition", "transform " + (params.time || 0) + "s ease");
       this.renderer.setElementStyle(this.element, "webkitTransform", "translate3d(" +
         (params.x && (!this.orientation || this.orientation.indexOf("x") != -1) ? (params.x) : 0) +
@@ -157,7 +158,7 @@ export class CardComponent {
 
   @HostListener('pan', ['$event'])
   onPan(event: any) {
-    if (!this.fixed) {
+    if (!this.fixed && !this.released) {
       this.onSwipeCb(event);
       if (this.onSwipe) {
         this.onSwipe.emit(event);
@@ -167,7 +168,7 @@ export class CardComponent {
 
   @HostListener('panend', ['$event'])
   onPanEnd(event: any) {
-    if (!this.fixed) {
+    if (!this.fixed && !this.released) {
       if (
         (this.orientation == "x" && (this.releaseRadius.x < event.deltaX || this.releaseRadius.x * -1 > event.deltaX)) ||
         (this.orientation == "y" && (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY)) ||
@@ -175,6 +176,7 @@ export class CardComponent {
           (this.releaseRadius.y < event.deltaY || this.releaseRadius.y * -1 > event.deltaY))
       ) {
         if (this.onRelease) {
+          this.released = true;
           this.onRelease.emit(event);
         }
       } else {
