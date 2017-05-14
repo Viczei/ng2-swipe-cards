@@ -123,8 +123,8 @@ export class TinderCardDirective {
       this.renderer.setElementStyle(this.overlayElement, "opacity", "0");
       this.renderer.setElementStyle(this.overlayElement, "border-radius", "2px");
       this.renderer.setElementStyle(this.overlayElement, "position", "absolute");
-      this.renderer.setElementStyle(this.overlayElement, "width", "calc(100%)");
-      this.renderer.setElementStyle(this.overlayElement, "height", "calc(100%)");
+      this.renderer.setElementStyle(this.overlayElement, "width", "100%");
+      this.renderer.setElementStyle(this.overlayElement, "height", "100%");
       this.renderer.setElementStyle(this.overlayElement, "top", "0");
       this.renderer.setElementStyle(this.overlayElement, "left", "0");
       this.renderer.setElementStyle(this.overlayElement, "display", "flex");
