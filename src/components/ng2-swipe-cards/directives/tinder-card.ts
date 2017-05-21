@@ -172,16 +172,6 @@ export class TinderCardDirective {
     });
   }
 
-  ngOnChanges(changes) {
-    if (changes.callLike) {
-      this._callLike = changes.callLike.currentValue || changes.callLike.previousValue || new EventEmitter();
-      this.initCallLike();
-    }
-    if (changes.overlay) {
-      this._overlay = changes.overlay.currentValue || changes.overlay.previousValue || {};
-    }
-  }
-
   ngOnDestroy() {
     if (this._callLike) {
       this._callLike.unsubscribe();
