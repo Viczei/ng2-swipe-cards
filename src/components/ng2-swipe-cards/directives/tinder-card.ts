@@ -6,7 +6,9 @@ import {
   HostListener,
   Renderer,
   Input,
-  Output
+  Output,
+  OnInit,
+  OnDestroy
 }
 from '@angular/core';
 
@@ -17,7 +19,7 @@ from '@angular/core';
     class: 'card-heap'
   }
 })
-export class TinderCardDirective {
+export class TinderCardDirective implements OnInit, OnDestroy {
   _overlay: any;
   @Input('tinder-card')
   set overlay(value: any) {
