@@ -14,7 +14,7 @@ import {
   moduleId: module.id,
   selector: 'swipe-cards',
   templateUrl: './swipe-cards.component.html',
-  styleUrls: ['./swipe-cards.component.scss'],
+  styleUrls: ['./swipe-cards.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 

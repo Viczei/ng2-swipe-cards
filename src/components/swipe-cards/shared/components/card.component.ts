@@ -24,7 +24,7 @@ import {SwipeCardsApi} from '@components/swipe-cards/shared/services/swipe-cards
   moduleId: module.id,
   selector: 'card',
   templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss'],
+  styleUrls: ['./card.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
