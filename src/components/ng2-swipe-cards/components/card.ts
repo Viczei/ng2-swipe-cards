@@ -5,7 +5,9 @@ import {
   HostListener,
   Renderer,
   Input,
-  Output
+  Output,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 
 @Component({
@@ -67,7 +69,7 @@ import {
     }
 `]
 })
-export class CardComponent {
+export class CardComponent implements OnInit, OnDestroy {
   @Input() fixed: Boolean = false;
   _orientation: string = 'xy';
   @Input('orientation')
