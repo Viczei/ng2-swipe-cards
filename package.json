@@ -1,6 +1,6 @@
 {
     "name": "ng2-swipe-cards",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Build an Angular library compatible with AoT compilation and Tree shaking",
     "main": "./bundles/ng2-swipe-cards.umd.js",
     "module": "./esm5/ng2-swipe-cards.js",
