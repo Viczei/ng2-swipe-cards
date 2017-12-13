@@ -1,33 +1,25 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "baseUrl": ".",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "rootDir": ".",
         "sourceMap": true,
-        "noEmitHelpers": true,
-        "noImplicitAny": false,
-        "baseUrl": "./src",
-        "paths": {},
+        "inlineSources": true,
+        "target": "es5",
+        "skipLibCheck": true,
         "lib": [
-            "dom",
-            "es6"
+            "es2015",
+            "dom"
         ],
-        "types": [
-            "node",
-            "source-map",
-            "uglify-js",
-            "webpack"
+        "typeRoots": [
+            "./node_modules/@types/"
         ]
     },
-    "awesomeTypescriptLoaderOptions": {
-        "forkChecker": true,
-        "useWebpackText": true
-    },
     "exclude": [
-        "node_modules",
-        "dist"
+        "node_modules"
     ]
 }
