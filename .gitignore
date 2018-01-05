@@ -36,3 +36,6 @@ node_modules
 src/**/*.js
 src/**/*.js.map
 src/**/*.json
+
+package-lock.json
+
