@@ -1,6 +1,9 @@
 # ng2-swipe-cards
 A kit of cards (including tinder-card) for angular2
 
+# Demo
+https://embed.plnkr.co/ebTZz51SsYUs7wzLemuo/
+
 # Installation
 ```bash
 $ npm install ng2-swipe-cards --save
