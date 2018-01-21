@@ -1,0 +1,13 @@
+.swipe-cards {
+  width: 100%;
+  height: 100%;
+}
+
+.swipe-cards-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 15px;
+  text-align: center;
+}

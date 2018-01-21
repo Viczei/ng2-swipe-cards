@@ -1,0 +1,21 @@
+<div class="swipe-cards">
+  <card #cardElement *ngFor="let card of cards;let i = index; trackBy:trackByFn"
+    [card]="card"
+    [cardElement]="cardElement"
+    [position]="i"
+    [config]="config"
+    [orientation]="config.orientation"
+    [beforeSwipeAction]="beforeSwipeAction"
+    (onLike)="onLike($event)" 
+    (onDislike)="onDislike($event)"
+    (onSwipe)="onSwipe($event)"
+    (onAbort)="onAbort($event)"
+    (onDisallowed)="onDisallowed($event)"
+    (onSpecial)="onSpecial($event)"
+    (removeCard)="removeCard($event, i)">
+    <ng-template [ngTemplateOutlet]="cardRef" [ngOutletContext]="{$implicit: card}"></ng-template>
+  </card>
+  <div class="swipe-cards-controls">
+    <ng-template [ngTemplateOutlet]="controlsRef"></ng-template>
+  </div>
+</div>
