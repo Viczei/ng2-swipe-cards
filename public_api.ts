@@ -9,4 +9,4 @@
 /**
  * Entry point for all public APIs of the package.
  */
-export * from './src/ng2-swipe-cards';
+export * from './src/ng2-swipe-cards.module';
